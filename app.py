@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
 import sources
 
 app = Flask(__name__)
@@ -9,13 +9,12 @@ def index():
         part_number = request.form.get("part_number", "").strip()
         selected_sources = request.form.getlist("sources")
 
-        urls = []
         if part_number and selected_sources:
+            urls = []
             for name in selected_sources:
                 url_template = sources.SOURCES.get(name)
                 if url_template:
-                    url = url_template.format(part_number)
-                    urls.append(url)
+                    urls.append(url_template.format(part_number))
             return render_template("results.html", urls=urls)
 
     return render_template("index.html", sources=sources.SOURCES.keys())
