@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aerospace Part Finder</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Aerospace Part Finder</h2>
+    <form method="post">
+        <div class="mb-3">
+            <label for="part_number" class="form-label">Enter Part Number:</label>
+            <input type="text" name="part_number" id="part_number" class="form-control" required>
+        </div>
+        <fieldset class="mb-4">
+            <legend>Select Sources:</legend>
+            {% for source in sources %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sources" value="{{ source }}" id="{{ source }}" checked>
+                <label class="form-check-label" for="{{ source }}">{{ source }}</label>
+            </div>
+            {% endfor %}
+        </fieldset>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+</body>
+</html>
