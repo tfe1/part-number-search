@@ -1,87 +1,61 @@
-#!/usr/bin/env python3
-"""
-search_part.py  —  Google Programmable Search Edition
-=====================================================
+import tkinter as tk
+from tkinter import ttk, messagebox
+import webbrowser
 
-Search the web for a specific electronic part number and print the top N
-results (title, URL, snippet).
+SOURCES = {
+    "Digi-Key": "https://www.digikey.com/en/products/result?keywords={}",
+    "Mouser": "https://www.mouser.com/Search/Refine.aspx?Keyword={}",
+    "Arrow": "https://www.arrow.com/en/products/search?q={}",
+    "Rochester Electronics": "https://www.rocelec.com/search?text={}",
+    "ISO Group": "https://www.iso-group.com/search?search={}",
+    "FindChips": "https://www.findchips.com/search/{}",
+    "Octopart": "https://octopart.com/search?q={}",
+    "NSN Parts Now": "https://www.nsnpartsnow.com/search?q={}",
+    "Alibaba": "https://www.alibaba.com/trade/search?SearchText={}",
+    "PartsBase": "https://www.partsbase.com/search?q={}",
+    "eBay": "https://www.ebay.com/sch/i.html?_nkw={}"
+}
 
-Requirements:
--------------
-1. Python 3.8+
-2. pip install requests
-3. Environment variables:
-   - GOOGLE_API_KEY="your Google Cloud API key"
-   - GOOGLE_CX="your Programmable Search Engine ID"
-
-Usage:
--------
-$ python search_part.py STM32F103C8T6 --top_k 10
-"""
-
-import argparse
-import os
-import textwrap
-import requests
-
-
-def google_search(query: str, api_key: str, cx: str, top_k: int = 10) -> list[dict]:
-    """Query Google Custom Search and return results."""
-    endpoint = "https://www.googleapis.com/customsearch/v1"
-    params = {
-        "key": api_key,
-        "cx": cx,
-        "q": f'"{query}"',
-        "num": min(top_k, 10)  # max per request
-    }
-
-    response = requests.get(endpoint, params=params, timeout=10)
-    response.raise_for_status()
-    data = response.json()
-
-    return [
-        {
-            "title": item["title"],
-            "url": item["link"],
-            "snippet": item.get("snippet", "")
-        }
-        for item in data.get("items", [])
-    ]
-
-
-def print_results(results: list[dict]):
-    """Pretty-print search results."""
-    for i, result in enumerate(results, 1):
-        print(f"{i}. {result['title']}")
-        print(f"   {result['url']}")
-        print(f"   {textwrap.shorten(result['snippet'], width=100)}\n")
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Search for a part number using Google Custom Search API.")
-    parser.add_argument("part_number", help="Part number to search for (e.g., STM32F103C8T6)")
-    parser.add_argument("--top_k", type=int, default=10, help="Number of results to return (max 10 per query)")
-    args = parser.parse_args()
-
-    api_key = os.getenv("GOOGLE_API_KEY")
-    cx = os.getenv("GOOGLE_CX")
-
-    if not api_key or not cx:
-        print("❌ Error: You must set GOOGLE_API_KEY and GOOGLE_CX environment variables.")
-        print("Example:\n  export GOOGLE_API_KEY='your-key'\n  export GOOGLE_CX='your-cx-id'")
+def search_part():
+    part_number = entry_part.get().strip()
+    if not part_number:
+        messagebox.showwarning("Input Error", "Please enter a part number.")
         return
 
-    try:
-        results = google_search(args.part_number, api_key, cx, args.top_k)
-        if results:
-            print_results(results)
-        else:
-            print("No results found.")
-    except requests.HTTPError as e:
-        print(f"HTTP error: {e.response.status_code}\n{e.response.text[:200]}")
-    except requests.RequestException as e:
-        print(f"Network error: {e}")
+    selected = [src for src, var in source_vars.items() if var.get()]
+    if not selected:
+        messagebox.showwarning("Selection Error", "Please select at least one source.")
+        return
 
+    for source in selected:
+        url = SOURCES[source].format(part_number)
+        webbrowser.open_new_tab(url)
 
-if __name__ == "__main__":
-    main()
+root = tk.Tk()
+root.title("Aerospace Part Finder")
+root.geometry("500x500")
+root.resizable(False, False)
+
+title = ttk.Label(root, text="Aerospace Part Search Tool", font=("Helvetica", 16, "bold"))
+title.pack(pady=10)
+
+frame_entry = ttk.Frame(root)
+frame_entry.pack(pady=10)
+ttk.Label(frame_entry, text="Enter Part Number:").pack(side="left", padx=5)
+entry_part = ttk.Entry(frame_entry, width=40)
+entry_part.pack(side="left")
+
+frame_sources = ttk.LabelFrame(root, text="Search Sources")
+frame_sources.pack(padx=20, pady=10, fill="both", expand=True)
+
+source_vars = {}
+for source in SOURCES:
+    var = tk.BooleanVar(value=True)
+    chk = ttk.Checkbutton(frame_sources, text=source, variable=var)
+    chk.pack(anchor="w", padx=10)
+    source_vars[source] = var
+
+btn_search = ttk.Button(root, text="Search Part", command=search_part)
+btn_search.pack(pady=20)
+
+root.mainloop()
