@@ -13,7 +13,17 @@ SOURCES = {
     "NSN Parts Now": "https://www.nsnpartsnow.com/search?q={}",
     "Alibaba": "https://www.alibaba.com/trade/search?SearchText={}",
     "PartsBase": "https://www.partsbase.com/search?q={}",
-    "eBay": "https://www.ebay.com/sch/i.html?_nkw={}"
+    "eBay": "https://www.ebay.com/sch/i.html?_nkw={}",
+    "AVNET": "https://www.avnet.com/shop/us/search/?term={}",
+    "Newark": "https://www.newark.com/search?st={}",
+    "Electronics Surplus": "https://www.electronicsurplus.com/catalogsearch/result/?q={}",
+    "Allied Electronics": "https://www.alliedelec.com/search/?keyword={}",
+    "Chip 1 Exchange": "https://www.chip1stop.com/search?keywords={}",
+    "Win Source": "https://www.win-source.net/search?q={}",
+    "Utmel": "https://www.utmel.com/components/{}/search",
+    "NSN Center": "https://www.nsncenter.com/nsn/search?nsn={}",
+    "Buy NSN": "https://www.buynsn.com/search?q={}",
+    "Part Target": "https://www.parttarget.com/search.aspx?q={}"
 }
 
 def search_part():
