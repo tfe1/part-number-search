@@ -6,15 +6,27 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background: #f8f9fa;
+            margin: 30px;
+            background: #f7f7f7;
         }
-        ul {
-            list-style: none;
-            padding: 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        li {
-            margin-bottom: 10px;
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        img {
+            max-width: 150px;
+            height: auto;
         }
         a {
             color: #007bff;
@@ -24,10 +36,10 @@
             text-decoration: underline;
         }
         button {
-            margin-top: 20px;
-            background-color: #007bff;
-            color: white;
+            margin-top: 30px;
             padding: 10px 20px;
+            background: #007bff;
+            color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -36,15 +48,36 @@
 </head>
 <body>
     <h2>Search Results</h2>
-    {% if urls %}
-        <ul>
-            {% for url in urls %}
-                <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
-            {% endfor %}
-        </ul>
+
+    {% if results %}
+    <table>
+        <tr>
+            <th>Source</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Link</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.source }}</td>
+            <td>{{ result.title }}</td>
+            <td>{{ result.description }}</td>
+            <td>
+                {% if result.image %}
+                    <img src="{{ result.image }}" alt="Product image">
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td><a href="{{ result.url }}" target="_blank">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
     {% else %}
-        <p>No results found.</p>
+    <p>No results found.</p>
     {% endif %}
+
     <a href="/"><button>Back to Search</button></a>
 </body>
 </html>
