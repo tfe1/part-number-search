@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sources
-import webbrowser
 
 app = Flask(__name__)
 
@@ -10,13 +9,15 @@ def index():
         part_number = request.form.get("part_number", "").strip()
         selected_sources = request.form.getlist("sources")
 
+        urls = []
         if part_number and selected_sources:
             for name in selected_sources:
                 url_template = sources.SOURCES.get(name)
                 if url_template:
                     url = url_template.format(part_number)
-                    webbrowser.open_new_tab(url)
-            return redirect("/")
+                    urls.append(url)
+            return render_template("results.html", urls=urls)
+
     return render_template("index.html", sources=sources.SOURCES.keys())
 
 if __name__ == "__main__":
